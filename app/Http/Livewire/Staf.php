@@ -6,12 +6,9 @@ use Livewire\Component;
 
 class Staf extends Component
 {
-    public $name;
-    public $email;
-    public $no_telp;
-    public $success;
+    public $name, $email, $no_telp, $success;
 
-    public $rules = [
+    protected $rules = [
         'name' => 'required|min:6',
         'email' => 'required|email',
         'no_telp' => 'required|min:12',

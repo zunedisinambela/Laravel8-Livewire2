@@ -1,7 +1,13 @@
 <div class="col-sm-12">
     <div class="card">
-        <div class="card-header">Data User</div>
+        <div class="card-header">
+            Data User <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUser">Add
+                User</button>
+        </div>
         <div class="card-body">
+            @if (session()->has('message'))
+                <div class="alert alert-success">{{ session('message') }}</div>
+            @endif
             <div class="row">
                 <div class="col">
                     <select wire:model="paginate" name="" id="" class="form-control form-control-sm w-auto">
@@ -23,11 +29,12 @@
                 <tbody>
                     <?php $no = 1; ?>
                     @foreach ($users as $index=>$item)
-                        <tr>
-                            <th scope="row">{{ $index + $users->firstItem() }}</th>
-                            <td>{{ $item->name }}</td>
-                            <td>{{ $item->email }}</td>
-                        </tr>
+                    <tr>
+                        <th scope="row">{{ $index + $users->firstItem() }}</th>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->email }}</td>
+                        <td>{{ $item->password }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -36,4 +43,53 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal -->
+    <div wire:ignore.self class="modal fade" id="addUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add Data User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label>Nama</label>
+                            <input name="name" wire:model="name" class="form-control" value="{{ old('name') }}">
+                            @error('name')
+                            <label class="text-danger">{{ $message }}</label>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input name="email" wire:model="email" class="form-control" value="{{ old('email') }}">
+                            @error('email')
+                            <label class="text-danger">{{ $message }}</label>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input name="password" wire:model="password" class="form-control" value="{{ old('password') }}">
+                            @error('password')
+                            <label class="text-danger">{{ $message }}</label>
+                            @enderror
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" wire:click.prevent="saveDataUser">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.livewire.on('addUser',()=>{
+            $('#addUser').modal('hide');
+        });
+    </script>
 </div>
