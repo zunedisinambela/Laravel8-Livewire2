@@ -82,6 +82,13 @@ class User extends Component
         $this->emit('editUser');
     }
 
+    public function deleteDataUser()
+    {
+        tableUser::where('id', $this->ids)->delete();
+        session()->flash('hapus', 'Data berhasil dihapus');
+        $this->emit('deleteUser');
+    }
+
     public function render()
     {
         return view('livewire.user',['users' => tableUser::orderBy('name', 'ASC')->paginate($this->paginate)])->extends('layouts.main')->section('content');

@@ -12,6 +12,10 @@
             @if (session()->has('edit'))
                 <div class="alert alert-warning">{{ session('edit') }}</div>
             @endif
+
+            @if (session()->has('hapus'))
+                <div class="alert alert-danger">{{ session('hapus') }}</div>
+            @endif
             <div class="row">
                 <div class="col">
                     <select wire:model="paginate" name="" id="" class="form-control form-control-sm w-auto">
@@ -41,7 +45,7 @@
                         <td>{{ $item->password }}</td>
                         <td>
                             <button wire:click.prevent="detailDataUser({{ $item->id }})" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#editUser">Edit</button>
-                            <button class="btn btn-sm btn-danger">Delete</button>
+                            <button wire:click.prevent="detailDataUser({{ $item->id }})" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#deleteUser">Delete</button>
                         </td>
                     </tr>
                     @endforeach
@@ -140,6 +144,28 @@
         </div>
     </div>
 
+
+    <!-- Modal Delete -->
+    <div wire:ignore.self class="modal fade" id="deleteUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Data User ({{ $name }})</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Apakah anda yakin ingin menghapus data ini?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger" wire:click.prevent="deleteDataUser()">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         window.livewire.on('addUser',()=>{
             $('#addUser').modal('hide');
@@ -147,6 +173,10 @@
 
         window.livewire.on('editUser',()=>{
             $('#editUser').modal('hide');
+        });
+
+        window.livewire.on('deleteUser',()=>{
+            $('#deleteUser').modal('hide');
         });
     </script>
 </div>
