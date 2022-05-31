@@ -5,17 +5,18 @@ namespace App\Http\Livewire;
 use Livewire\WithPagination;
 use Livewire\Component;
 use App\Models\User as tableUser;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Component
 {
     use WithPagination;
     public $paginate = 10;
     protected $paginationTheme = 'bootstrap';
-    public $name, $email, $password;
+    public $ids, $name, $email, $password;
 
     protected $rules = [
         'name' => 'required|min:4',
-        'email' => 'required|email|unique:users,email',
+        'email' => 'required|email',
         'password' => 'required|min:4'
     ];
 
@@ -24,7 +25,6 @@ class User extends Component
         'name.min' => 'Min 4 karakter',
         'email.required' => 'Email tidak boleh kosong',
         'email.email' => 'Bukan format email',
-        'email.unique' => 'Email ini sudah terdaftar',
         'password.required' => 'Password tidak boleh kosong',
         'password.min' => 'Password min 4 karakter'
     ];
@@ -44,13 +44,42 @@ class User extends Component
 
     public function saveDataUser()
     {
-        $validation = $this->validate();
-
-        tableUser::create($validation);
-        session()->flash('message', 'Data berhasil disimpan');
+        $this->validate();
+        $data = [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => Hash::make($this->password)
+        ];
+        tableUser::insert($data);
+        session()->flash('add', 'Data berhasil disimpan');
 
         $this->clearForm();
         $this->emit('addUser');
+    }
+
+    public function detailDataUser($id)
+    {
+        $user = tableUser::where('id',$id)->first();
+        $this->ids = $user->id;
+        $this->name = $user->name;
+        $this->email = $user->email;
+        $this->password = $user->password;
+    }
+
+    public function updateDataUser()
+    {
+        $validation = $this->validate();
+        $data = [
+            'name' => $this->name,
+            'email' => $this->email,
+            'password' => Hash::make($this->password)
+        ];
+        tableUser::where('id', $this->ids)->update($data);
+
+        session()->flash('edit', 'Data berhasil diubah');
+
+        $this->clearForm();
+        $this->emit('editUser');
     }
 
     public function render()
